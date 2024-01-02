@@ -5,9 +5,9 @@ Small application for CRUD API
 ## Team member
 
 - Đào Huy Hoàng - 19521528
-- Đặng Văn Tình - 19521023
-- Nguyễn Thành Luân - 20521582
-- Phan Hoàng Minh Quân - 20520713
+- Lê Minh Chánh - 21520596
+- Trần Thị Kim Anh - 21520596
+- Lê Thị Lệ Trúc - 21521882
 
 ## Target
 
@@ -21,3 +21,4 @@ Small application for CRUD API
 - Install RavenDB
 - Setup http link
 - Install libraries in project
+http://localhost:8081/docs
