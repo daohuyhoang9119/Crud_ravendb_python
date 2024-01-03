@@ -1,9 +1,9 @@
-import datetime
+from datetime import datetime
 from typing import Optional
 
 from fastapi import FastAPI
 from pyravendb.store.document_store import DocumentStore
-from src.models import Book
+from src.models import  Khachhang, Nhanvien, Sanpham
 
 app = FastAPI(title="Booking")
 server = "http://127.0.0.1:8080"  
@@ -14,63 +14,78 @@ store = None
 @app.on_event("startup")
 async def on_startup():
     global store
-    store = DocumentStore(urls=[server], database="booking")
+    store = DocumentStore(urls=[server], database="QUANLYBANHANG")
     store.initialize()
 
-@app.get("/books")
-async def get_list_books():
+#-----------NHANVIEN-------------------
+        
+@app.get("/employees")
+async def get_list_employees():
     with store.open_session() as session:
-        return list(session.query(object_type=Book))
+        return list(session.query(object_type=Nhanvien))
     
-
-@app.post("/books",status_code = 201)
-async def add_book(title:str, author: str, published_year: datetime.datetime):
+@app.post("/employees",status_code = 201)
+async def add_employee(hoten:str, manv: str, sdt: str):
     with store.open_session() as session:
-        new_book = Book(title, author, published_year)
-        session.store(new_book)
+        new_employee = Nhanvien(manv = manv,hoten = hoten, sdt = sdt)
+        session.store(new_employee, key=manv)
         session.save_changes()
 
-
-@app.delete("/books")
-async def remove_book(title:str, author:str):
+@app.delete("/employees")
+async def remove_employee(employee_id:str):
     with store.open_session() as session:
-        query = session.query_index("Book")
-        query = query.where_equals("title",title).and_also().where_equals("author",author)
-        book = query.firstOrDefault()
-        if book:
+        query = session.query_index("Nhanvien")
+        query = query.where_equals("manv",employee_id)
+        employee = query.firstOrDefault()
+        if employee:
             session.advanced.clear()
-            session.delete(book)
+            session.delete(employee)
             session.save_changes()
-            return {"message": f"Book '{title}' by '{author}' deleted successfully"}
+            return {"message": f"employee have id:'{employee_id}' deleted successfully"}
         else:
-            return {"message": f"Book '{title}' by '{author}' not found"}
+            return {"message": f"employee have id:'{employee_id}' not found"}
+        
 
-# @app.get("/romaneios/")
-# async def romaneios(numero_romaneio: Optional[int] = None):
-#     with store.open_session() as session:
-#         if numero_romaneio is None:
-#             query_result = list(session.query(object_type=Romaneio))
-#         else:
-#             query_result = list(session.query(object_type=Romaneio).where(numero=numero_romaneio))
-#         return query_result
+#-----------SANPHAM-------------------
+        
+@app.get("/products")
+async def get_list_products():
+    with store.open_session() as session:
+        return list(session.query(object_type=Sanpham))
+    
+@app.post("/products",status_code = 201)
+async def add_product( masp: str, tensp:str ,dvt: str, nuocsx: str, gia: float):
+    with store.open_session() as session:
+        new_product = Sanpham(masp = masp,tensp = tensp, dvt = dvt,nuocsx = nuocsx, gia = gia)
+        session.store(new_product)
+        session.save_changes()
 
+@app.delete("/products")
+async def remove_product(product_id:str):
+    with store.open_session() as session:
+        query = session.query_index("Sanpham")
+        query = query.where_equals("masp",product_id)
+        product = query.firstOrDefault()
+        if product:
+            session.advanced.clear()
+            session.delete(product)
+            session.save_changes()
+            return {"message": f"product have id:'{product_id}' deleted successfully"}
+        else:
+            return {"message": f"product have id:'{product_id}' not found"}
+        
 
-# @app.post("/romaneios/", status_code=201)
-# async def romaneio(numero: int, data_hora_carga: datetime.datetime, nome_destinatario: str, endereco: str, cidade: str,
-#                    uf: str, nome_transportadora, nome_motorista, placa):
-#     with store.open_session() as session:
-#         romaneio = Romaneio(numero, data_hora_carga, destinatario=Destinatario(nome_destinatario, endereco, cidade, uf),
-#                      transportador=Transportador(nome_transportadora, nome_motorista, placa), itens=[], updates=[])
-#         session.store(romaneio)
-#         session.save_changes()
-#         return romaneio
+        
+#-----------CUSTOMERS-------------------
+@app.get("/customers")
+async def get_list_customers():
+    with store.open_session() as session:
+        return list(session.query(object_type=Khachhang))
+    
+@app.post("/customers",status_code = 201)
+async def add_customer(makh: str, hoten:str ,sdt: str, diachi: str ,tongtien: float):
+    with store.open_session() as session:
+        new_customer = Khachhang(makh = makh, hoten = hoten, sdt = sdt,diachi = diachi,tongtien = tongtien )
+        session.store(new_customer, key=makh)
+        session.save_changes()
 
-
-# @app.post("/romaneios/{numero_romaneio}/adiciona_item/{qt_item}/{descricao}")
-# async def romaneios(numero_romaneio: int, qt_item: int, descricao: str):
-#     with store.open_session() as session:
-#         romaneio = list(session.query(object_type=Romaneio).where(numero=numero_romaneio))[0]
-#         romaneio.itens.append(Item(qt_volume=qt_item, descricao=descricao))
-#         session.store(romaneio)
-#         session.save_changes()
-#         return romaneio

@@ -4,6 +4,8 @@ __pycache__/
 *$py.class
 .idea/
 
+topology_files
+
 # C extensions
 *.so
 
