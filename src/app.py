@@ -7,7 +7,6 @@ from src.models import  Cthd, Hoadon, Khachhang, Nhanvien, Sanpham
 
 app = FastAPI(title="Quan ly ban hang ⭐")
 server = "http://26.57.247.94:8080"  
-# http://26.57.247.94:8080
 store = None
 
 
@@ -34,12 +33,9 @@ async def add_employee(hoten:str, manv: str, sdt: str):
 @app.delete("/employees")
 async def remove_employee(employee_id:str):
     with store.open_session() as session:
-        query = session.query_index("Nhanvien")
-        query = query.where_equals("manv",employee_id)
-        employee = query.firstOrDefault()
-        if employee:
-            session.advanced.clear()
-            session.delete(employee)
+        employee = list(session.query(object_type=Nhanvien).where_equals("manv", employee_id) )
+        if employee[0]:
+            session.delete(employee[0])
             session.save_changes()
             return {"message": f"employee have id:'{employee_id}' deleted successfully"}
         else:
@@ -63,12 +59,9 @@ async def add_product( masp: str, tensp:str ,dvt: str, nuocsx: str, gia: float):
 @app.delete("/products")
 async def remove_product(masp: str):
     with store.open_session() as session:
-        query = session.query(Sanpham)
-        query = query.where_equals("masp", masp)
-        product = query.firstOrDefault()
-        if product:
-            session.advanced.clear()
-            session.delete(product)
+        product = list(session.query(object_type=Sanpham).where_equals("masp", masp) )
+        if product[0]:
+            session.delete(product[0])
             session.save_changes()
             return {"message": f"product have id:'{masp}' deleted successfully"}
         else:
