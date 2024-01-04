@@ -83,6 +83,20 @@ async def add_customer(makh: str, hoten:str ,sdt: str, diachi: str ,tongtien: fl
         session.save_changes()
 
 
+@app.delete("/customers")
+async def remove_customer(makh: str):
+    with store.open_session() as session:
+        customer = list(session.query(object_type=Khachhang).where_equals("makh", makh) )
+        if customer[0]:
+            session.delete(customer[0])
+            session.save_changes()
+            return {"message": f"customer have id:'{makh}' deleted successfully"}
+        else:
+            return {"message": f"customer have id:'{makh}' not found"}
+
+
+
+
 #---------HOADON--------------
 @app.get("/orders")
 async def get_list_orders():
@@ -95,6 +109,18 @@ async def add_order(sohd: str, makh: str, nghd: str, manv: str ,trigia: float):
         new_order = Hoadon(sohd = sohd ,makh = makh, nghd = nghd, manv = manv, trigia = trigia )
         session.store(new_order, key=sohd)
         session.save_changes()
+
+@app.delete("/orders")
+async def remove_order(sohd: str):
+    with store.open_session() as session:
+        order = list(session.query(object_type=Hoadon).where_equals("sohd", sohd) )
+        if order[0]:
+            session.delete(order[0])
+            session.save_changes()
+            return {"message": f"order have id:'{sohd}' deleted successfully"}
+        else:
+            return {"message": f"order have id:'{sohd}' not found"}
+
 
 
 #---------CTHD--------------
