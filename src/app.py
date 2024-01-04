@@ -30,6 +30,21 @@ async def add_employee(hoten:str, manv: str, sdt: str):
         session.store(new_employee, key=manv)
         session.save_changes()
 
+@app.put("/employees")
+async def update_employee(employee_id,hoten,sdt):
+    with store.open_session() as session:
+        employee = list(session.query(object_type=Nhanvien).where_equals("manv", employee_id))[0] 
+        print('emp: ',employee)
+        if employee:
+            employee.hoten = hoten
+            employee.sdt = sdt
+            session.save_changes()
+            return {"message": f"employee have id:'{employee_id}' update successfully 👏"}
+        else: 
+            return {"message": f"employee have id:'{employee_id}' not found"}
+
+
+
 @app.delete("/employees")
 async def remove_employee(employee_id:str):
     with store.open_session() as session:
@@ -109,6 +124,8 @@ async def add_order(sohd: str, makh: str, nghd: str, manv: str ,trigia: float):
         new_order = Hoadon(sohd = sohd ,makh = makh, nghd = nghd, manv = manv, trigia = trigia )
         session.store(new_order, key=sohd)
         session.save_changes()
+
+
 
 @app.delete("/orders")
 async def remove_order(sohd: str):
