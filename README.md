@@ -21,4 +21,35 @@ Small application for CRUD API
 - Install RavenDB
 - Setup http link
 - Install libraries in project
-http://localhost:8081/docs
+  http://localhost:8081/docs
+
+------- QUERRY--------
+
+-- Show danh sách các quốc gia và số lượng sản phẩm của quốc gia đó
+from Orders
+group by Company
+where count() > 0
+order by count() as long desc
+select count(), Company
+
+---
+
+declare function localizedResults(c) {
+switch(c.nuocsx)
+{
+case "Trung Quoc":
+return { Des:'dm trung quoc'};
+case "Singapore":
+return { Des:'dm sgp' };
+case "Viet Nam":
+return { Des:'viet nam vo dich'};
+default:
+return { Name: c.nuocsx };
+}
+}
+from 'Sanphams' as s
+select localizedResults(s)
+
+---query 3----
+from "Khachhangs"
+where startsWith(diachi, '90')
