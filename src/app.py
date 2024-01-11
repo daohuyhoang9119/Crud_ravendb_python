@@ -26,6 +26,8 @@ async def get_list_employees():
 @app.post("/employees",status_code = 201)
 async def add_employee(hoten:str, manv: str, sdt: str):
     with store.open_session() as session:
+
+        
         new_employee = Nhanvien(manv = manv,hoten = hoten, sdt = sdt)
         session.store(new_employee, key=manv)
         session.save_changes()
@@ -111,7 +113,7 @@ async def remove_customer(makh: str):
 
 
 
-
+ADSDAS.REC
 #---------HOADON--------------
 @app.get("/orders")
 async def get_list_orders():
