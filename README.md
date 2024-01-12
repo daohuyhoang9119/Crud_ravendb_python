@@ -23,15 +23,28 @@ Small application for CRUD API
 - Install libraries in project
   http://localhost:8081/docs
 
-------- QUERRY--------
+Tìm sản phẩm có tên là "BUT CHI"
+
+```bash
+    from 'Sanphams'
+    where tensp = 'BUT CHI'
+```
+
+Tìm sản phẩm trong tên có chữ là "GIAY"
+
+```bash
+    from 'Sanphams'
+    where search(tensp,'GIAY')
+```
+
 Show danh sách các quốc gia và số lượng sản phẩm của quốc gia đó
 
 ```bash
-    from Orders
-    group by Company
+    from 'Sanphams'
+    group by nuocsx
     where count() > 0
     order by count() as long desc
-    select count(), Company
+    select count(), nuocsx
 ```
 
 Tìm khách hàng có địa chỉ bắt đầu bằng số 90
