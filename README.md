@@ -48,12 +48,12 @@ Sử dụng switch-case
 declare function localizedResults(c) {
     switch(c.nuocsx)
     {
-        case "Trung Quoc":
-            return { Des:'dm trung quoc'};
-        case "Singapore":
-            return { Des:'dm sgp'};
-        case "Viet Nam":
-            return { Des:'viet nam vo dich'};
+        case "TRUNGQUOC":
+            return { TrungQuoc: c.gia };
+        case "SINGAPORE":
+            return { Singapore: c.gia};
+        case "VIETNAM":
+            return { VietNam: c.gia};
         default:
             return { Des: 'nothing' };
     }
