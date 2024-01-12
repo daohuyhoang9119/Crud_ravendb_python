@@ -6,28 +6,47 @@ from pyravendb.store.document_store import DocumentStore
 from src.models import  Cthd, Hoadon, Khachhang, Nhanvien, Sanpham
 
 app = FastAPI(title="Quan ly ban hang ⭐")
-server = "http://26.57.247.94:8080"  
-store = None
+server1 = "http://26.57.247.94:8080"  
+server2 = "http://26.120.55.227:8080"
 
+store1 = None
+store2 = None
 
 @app.on_event("startup")
 async def on_startup():
-    global store
-    store = DocumentStore(urls=[server], database="QUANLYBANHANG")
-    store.initialize()
+    global store1
+    global store2
+    store1 = DocumentStore(urls=[server1], database="QUANLYBANHANG")
+    store2 = DocumentStore(urls=[server2], database="QuanLyBanHang_KA")
+    store1.initialize()
+    store2.initialize()
 
 #-----------NHANVIEN-------------------
-        
+
+
+@app.get("/employees1")
+async def getlistemp1():
+    with store1.open_session() as session1:
+        list_emp1 =  list(session1.query(object_type=Nhanvien))
+    return list_emp1
+
+@app.get("/employees2")
+async def getlistemp2():
+    with store2.open_session() as session1:
+        list_emp2 =  list(session1.query(object_type=Nhanvien))
+    return list_emp2
+
 @app.get("/employees")
 async def get_list_employees():
-    with store.open_session() as session:
-        return list(session.query(object_type=Nhanvien))
-    
+    result1 = await getlistemp1()
+    result2 = await getlistemp2()
+    result = result1 + result2
+    return result
+
+
 @app.post("/employees",status_code = 201)
 async def add_employee(hoten:str, manv: str, sdt: str):
     with store.open_session() as session:
-
-        
         new_employee = Nhanvien(manv = manv,hoten = hoten, sdt = sdt)
         session.store(new_employee, key=manv)
         session.save_changes()
